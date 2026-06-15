@@ -2,16 +2,34 @@ const MedicalRecord = require("../models/MedicalRecord");
 
 const createRecord = async (req, res) => {
   try {
+    console.log("Inside createRecord");
+    console.log("Body:", req.body);
+    console.log("File:", req.file);
+
     const record = await MedicalRecord.create({
       patientPhone: req.body.patientPhone,
       patientName: req.body.patientName,
       title: req.body.title,
       description: req.body.description,
+
+      doctorName: req.body.doctorName,
+      department: req.body.department,
+      diagnosis: req.body.diagnosis,
+      medicines: req.body.medicines,
+      notes: req.body.notes,
+
+      fileUrl: req.file
+        ? `/uploads/${req.file.filename}`
+        : "",
+
       uploadedBy: req.user.id,
     });
 
     res.status(201).json(record);
   } catch (error) {
+    console.error("CREATE RECORD ERROR:");
+    console.error(error);
+
     res.status(500).json({
       message: error.message,
     });

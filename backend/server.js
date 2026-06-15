@@ -7,6 +7,7 @@ const protect = require("./middleware/authMiddleware");
 const medicalRecordRoutes = require(
   "./routes/medicalRecordRoutes"
 );
+const path = require("path");
 dotenv.config();
 
 const app = express();
@@ -15,6 +16,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use("/api/auth", authRoutes);
+app.use(
+  "/uploads",
+  express.static(
+    path.join(__dirname, "uploads")
+  )
+);
 // connect database
 connectDB();
 

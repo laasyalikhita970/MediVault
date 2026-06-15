@@ -33,6 +33,7 @@ const medicalRecordSchema = new mongoose.Schema(
     medicines: [String],
 
     notes: String,
+    fileUrl: String,
 
     uploadedBy: {
       type: mongoose.Schema.Types.ObjectId,
