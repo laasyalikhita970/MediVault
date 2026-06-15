@@ -61,27 +61,42 @@ const logout = () => {
   }, []);
 
   return (
-    <div>
-      <h1>MediVault Dashboard</h1>
+  <div className="min-h-screen bg-gray-100 p-6">
+    <div className="max-w-6xl mx-auto">
 
-      <h3>
-        Welcome {user?.name}
-      </h3>
-<button onClick={logout}>
-  Logout
-</button>
-      <AddRecord
-        refreshRecords={loadRecords}
-      />
+      <div className="bg-white rounded-xl shadow p-6 mb-6 flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold text-blue-600">
+            MediVault
+          </h1>
 
-      <hr />
+          <p className="text-gray-600">
+            Welcome {user?.name}
+          </p>
+        </div>
 
-      <RecordsList
-        records={records}
-        deleteRecord={deleteRecord}
-      />
+        <button
+          onClick={logout}
+          className="bg-red-500 text-white px-4 py-2 rounded"
+        >
+          Logout
+        </button>
+      </div>
+
+      <div className="bg-white rounded-xl shadow p-6 mb-6">
+        <AddRecord refreshRecords={loadRecords} />
+      </div>
+
+      <div className="bg-white rounded-xl shadow p-6">
+        <RecordsList
+          records={records}
+          deleteRecord={deleteRecord}
+        />
+      </div>
+
     </div>
-  );
+  </div>
+);
 }
 
 export default Dashboard;
