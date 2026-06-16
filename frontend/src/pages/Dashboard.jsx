@@ -126,8 +126,18 @@ const filteredRecords = records.filter(
         />
       </div>
 
+     
       <div className="bg-white rounded-xl shadow p-6 mb-6">
-        <AddRecord refreshRecords={loadRecords} />
+       {editingRecord && (
+  <div className="bg-yellow-100 p-3 mb-4 rounded">
+    Editing: {editingRecord.title}
+  </div>
+)}
+       <AddRecord
+  refreshRecords={loadRecords}
+  editingRecord={editingRecord}
+  setEditingRecord={setEditingRecord}
+/>
       </div>
 
       <div className="bg-white rounded-xl shadow p-6">

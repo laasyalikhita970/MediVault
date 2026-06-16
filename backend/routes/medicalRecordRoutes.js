@@ -28,7 +28,12 @@ router.get("/details/:id", protect, getRecordById);
 
 router.get("/:phone", protect, getRecordsByPhone);
 
-router.put("/:id", protect, updateRecord);
+router.put(
+  "/:id",
+  protect,
+  upload.single("file"),
+  updateRecord
+);
 
 router.delete("/:id", protect, deleteRecord);
 

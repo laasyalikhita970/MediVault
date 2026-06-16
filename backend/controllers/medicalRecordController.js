@@ -52,22 +52,35 @@ const getRecordsByPhone = async (req, res) => {
 
 const updateRecord = async (req, res) => {
   try {
-    const record = await MedicalRecord.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
+    const updateData = {
+      patientPhone: req.body.patientPhone,
+      patientName: req.body.patientName,
+      title: req.body.title,
+      diagnosis: req.body.diagnosis,
+    };
+
+    if (req.file) {
+      updateData.fileUrl =
+        `/uploads/${req.file.filename}`;
+    }
+
+    const record =
+      await MedicalRecord.findByIdAndUpdate(
+        req.params.id,
+        updateData,
+        { new: true }
+      );
 
     if (!record) {
       return res.status(404).json({
-        message: "Record not found"
+        message: "Record not found",
       });
     }
 
     res.json(record);
   } catch (error) {
     res.status(500).json({
-      message: error.message
+      message: error.message,
     });
   }
 };

@@ -1,7 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import API from "../services/api";
 
-function AddRecord({ refreshRecords }) {
+function AddRecord({
+  refreshRecords,
+  editingRecord,
+  setEditingRecord
+}) {
   const [form, setForm] = useState({
     patientPhone: "",
     patientName: "",
@@ -9,6 +13,20 @@ function AddRecord({ refreshRecords }) {
     diagnosis: ""
   });
   const [file, setFile] = useState(null);
+  useEffect(() => {
+  if (editingRecord) {
+    setForm({
+      patientPhone:
+        editingRecord.patientPhone || "",
+      patientName:
+        editingRecord.patientName || "",
+      title:
+        editingRecord.title || "",
+      diagnosis:
+        editingRecord.diagnosis || ""
+    });
+  }
+}, [editingRecord]);
 
   const handleChange = (e) => {
     setForm({
@@ -19,6 +37,23 @@ function AddRecord({ refreshRecords }) {
 
 const handleSubmit = async (e) => {
   e.preventDefault();
+    if (
+    !form.patientPhone ||
+    !form.patientName ||
+    !form.title ||
+    !form.diagnosis
+  ) {
+    alert("Please fill all required fields");
+    return;
+  }
+if (form.patientPhone.length !== 10) {
+  alert("Phone number must be 10 digits");
+  return;
+}
+if (!file && !editingRecord) {
+  alert("Please upload a medical file");
+  return;
+}
 
   try {
     const token =
@@ -54,21 +89,48 @@ const handleSubmit = async (e) => {
       );
     }
 
-    await API.post(
-      "/records",
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type":
-            "multipart/form-data",
-        },
-      }
-    );
+    if (editingRecord) {
+  await API.put(
+    `/records/${editingRecord._id}`,
+    formData,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type":
+          "multipart/form-data",
+      },
+    }
+  );
 
-    alert("Record Added");
+  alert("Record Updated");
+
+  setEditingRecord(null);
+} else {
+  await API.post(
+    "/records",
+    formData,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type":
+          "multipart/form-data",
+      },
+    }
+  );
+
+  alert("Record Added");
+}
+      
 
     refreshRecords();
+    setForm({
+  patientPhone: "",
+  patientName: "",
+  title: "",
+  diagnosis: ""
+});
+
+setFile(null);
   } catch (error) {
     console.log(error);
     alert("Failed");
@@ -77,58 +139,111 @@ const handleSubmit = async (e) => {
 
   return (
   <form
-    onSubmit={handleSubmit}
-    className="space-y-4"
-  >
-    <h2 className="text-2xl font-bold text-blue-600">
-      Add Medical Record
-    </h2>
+  onSubmit={handleSubmit}
+  className="space-y-5 max-w-3xl mx-auto"
+>
+   <h2 className="text-3xl font-bold text-blue-600 mb-4">
+  {editingRecord
+    ? "Edit Medical Record"
+    : "Add Medical Record"}
+</h2>
 
-    <input
-      name="patientPhone"
-      placeholder="Patient Phone"
-      value={form.patientPhone}
-      onChange={handleChange}
-      className="w-full border rounded-lg p-3"
-    />
+<p className="text-gray-500 mb-6">
+  Enter patient information and upload reports.
+</p>
 
-    <input
-      name="patientName"
-      placeholder="Patient Name"
-      value={form.patientName}
-      onChange={handleChange}
-      className="w-full border rounded-lg p-3"
-    />
+    <div>
+  <label className="block mb-1 font-medium">
+    Patient Phone
+  </label>
 
-    <input
-      name="title"
-      placeholder="Record Title"
-      value={form.title}
-      onChange={handleChange}
-      className="w-full border rounded-lg p-3"
-    />
+  <input
+  name="patientPhone"
+  required
+    value={form.patientPhone}
+    onChange={handleChange}
+    className="w-full border rounded-lg p-3"
+    placeholder="Enter patient phone"
+  />
+</div>
 
-    <input
-      name="diagnosis"
-      placeholder="Diagnosis"
-      value={form.diagnosis}
-      onChange={handleChange}
-      className="w-full border rounded-lg p-3"
-    />
+<div>
+  <label className="block mb-1 font-medium">
+    Patient Name
+  </label>
 
-    <input
-      type="file"
-      onChange={(e) =>
-        setFile(e.target.files[0])
-      }
-      className="w-full border rounded-lg p-3"
-    />
+  <input
+  name="patientName"
+  required
+    value={form.patientName}
+    onChange={handleChange}
+    className="w-full border rounded-lg p-3"
+    placeholder="Enter patient name"
+  />
+</div>
+
+<div>
+  <label className="block mb-1 font-medium">
+    Record Title
+  </label>
+
+  <input
+  name="title"
+  required
+    value={form.title}
+    onChange={handleChange}
+    className="w-full border rounded-lg p-3"
+    placeholder="Blood Test / X-Ray / Prescription"
+  />
+</div>
+
+<div>
+  <label className="block mb-1 font-medium">
+    Diagnosis
+  </label>
+
+ <input
+  name="diagnosis"
+  required
+    value={form.diagnosis}
+    onChange={handleChange}
+    className="w-full border rounded-lg p-3"
+    placeholder="Enter diagnosis"
+  />
+</div>
+
+<div>
+  <label className="block mb-1 font-medium">
+    Upload Medical File
+  </label>
+
+  {editingRecord?.fileUrl && (
+    <a
+      href={`http://localhost:5000${editingRecord.fileUrl}`}
+      target="_blank"
+      rel="noreferrer"
+      className="text-blue-600 underline block mb-2"
+    >
+      View Existing Report
+    </a>
+  )}
+
+  <input
+    type="file"
+    onChange={(e) =>
+      setFile(e.target.files[0])
+    }
+    className="w-full border rounded-lg p-3"
+  />
+</div>
 
     <button
       type="submit"
       className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700"
     >
-      Add Record
+     {editingRecord
+  ? "Update Record"
+  : "Add Record"}
     </button>
   </form>
 );

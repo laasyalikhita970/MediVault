@@ -35,8 +35,18 @@ function Login() {
         "user",
         JSON.stringify(res.data.user)
       );
+      localStorage.setItem(
+  "role",
+  res.data.user.role
+);
 
-      navigate("/dashboard");
+     if (res.data.user.role === "doctor") {
+  navigate("/doctor");
+} else if (res.data.user.role === "helper") {
+  navigate("/helper");
+} else {
+  navigate("/dashboard");
+}
     } catch (error) {
       alert("Login Failed");
       console.log(error);
