@@ -49,14 +49,19 @@ const getRecordsByPhone = async (req, res) => {
     });
   }
 };
-
 const updateRecord = async (req, res) => {
   try {
+    console.log(req.body);
     const updateData = {
       patientPhone: req.body.patientPhone,
       patientName: req.body.patientName,
       title: req.body.title,
       diagnosis: req.body.diagnosis,
+
+      doctorName: req.body.doctorName,
+      department: req.body.department,
+      medicines: req.body.medicines,
+      notes: req.body.notes,
     };
 
     if (req.file) {
@@ -78,6 +83,7 @@ const updateRecord = async (req, res) => {
     }
 
     res.json(record);
+
   } catch (error) {
     res.status(500).json({
       message: error.message,

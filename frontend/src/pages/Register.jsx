@@ -2,7 +2,7 @@ import { useState } from "react";
 import API from "../services/api";
 
 function Register() {
-  const [form, setForm] = useState({
+const [form, setForm] = useState({
   name: "",
   phone: "",
   password: "",
