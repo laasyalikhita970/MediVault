@@ -1,8 +1,10 @@
+import { useNavigate } from "react-router-dom";
 function RecordsList({
   records,
   deleteRecord,
   setEditingRecord
 }) {
+    const navigate = useNavigate();
   if (records.length === 0) {
     return (
       <div className="text-center py-10">
@@ -26,9 +28,14 @@ function RecordsList({
 >
   <div className="flex justify-between items-start mb-4">
     <div>
-      <h2 className="text-2xl font-bold text-blue-600">
-        {record.title}
-      </h2>
+      <h2
+  onClick={() =>
+    navigate(`/record/${record._id}`)
+  }
+  className="text-2xl font-bold text-blue-600 cursor-pointer hover:underline"
+>
+  {record.title}
+</h2>
 
       <p className="text-gray-500">
         {record.patientName}
@@ -87,7 +94,14 @@ function RecordsList({
       View Report
     </a>
   )}
-
+<button
+  onClick={() =>
+    navigate(`/record/${record._id}`)
+  }
+  className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg"
+>
+  View Details
+</button>
   <button
     onClick={() =>
       setEditingRecord(record)

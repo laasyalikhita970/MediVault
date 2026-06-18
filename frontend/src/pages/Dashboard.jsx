@@ -3,6 +3,7 @@ import AddRecord from "../components/AddRecord";
 import RecordsList from "../components/RecordsList";
 import API from "../services/api";
 import { useNavigate } from "react-router-dom";
+import MedicalTimeline from "../components/MedicalTimeline";
 function Dashboard() {
   const [records, setRecords] = useState([]);
   const [searchPhone, setSearchPhone] = useState("");
@@ -83,14 +84,24 @@ const filteredRecords = records.filter(
 
           
         </div>
-
+        <div className="flex gap-3">
+        <button
+  onClick={() =>
+    navigate("/profile")
+  }
+  className="bg-blue-600 text-white px-4 py-2 rounded"
+>
+  Profile
+</button>
         <button
           onClick={logout}
           className="bg-red-500 text-white px-4 py-2 rounded"
         >
           Logout
         </button>
+        </div>
       </div>
+      
 
       <div className="grid grid-cols-2 gap-4 mb-6">
         <div className="bg-white shadow rounded-xl p-4">
@@ -146,6 +157,11 @@ const filteredRecords = records.filter(
   deleteRecord={deleteRecord}
   setEditingRecord={setEditingRecord}
 />
+<div className="mt-6">
+  <MedicalTimeline
+    records={records}
+  />
+</div>
       </div>
 
     </div>
