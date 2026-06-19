@@ -27,7 +27,10 @@ const medicalRecordSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-
+    category: {
+  type: String,
+  default: "Prescription"
+},
     diagnosis: String,
 
     medicines: [String],

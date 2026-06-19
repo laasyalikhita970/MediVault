@@ -55,6 +55,7 @@ const updateRecord = async (req, res) => {
     const updateData = {
       patientPhone: req.body.patientPhone,
       patientName: req.body.patientName,
+      category: req.body.category,
       title: req.body.title,
       diagnosis: req.body.diagnosis,
 

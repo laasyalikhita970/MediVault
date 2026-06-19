@@ -9,10 +9,10 @@ function RecordDetails() {
     useState(null);
 
   useEffect(() => {
-    loadRecord();
+    fetchRecord();
   }, []);
 
-  const loadRecord = async () => {
+  const fetchRecord = async () => {
     try {
       const token =
         localStorage.getItem("token");
@@ -34,51 +34,25 @@ function RecordDetails() {
   };
 
   if (!record)
-    return <h2>Loading...</h2>;
+    return <p>Loading...</p>;
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <div className="max-w-4xl mx-auto bg-white shadow rounded-xl p-6">
+    <div className="p-6">
+      <div className="bg-white shadow rounded-xl p-6">
 
-        <h1 className="text-3xl font-bold text-blue-600 mb-6">
-          Medical Record Details
+        <h1 className="text-3xl font-bold text-blue-600 mb-4">
+          {record.title}
         </h1>
 
-        <p>
-          <strong>Patient:</strong>{" "}
-          {record.patientName}
-        </p>
-
-        <p>
-          <strong>Phone:</strong>{" "}
-          {record.patientPhone}
-        </p>
-
-        <p>
-          <strong>Title:</strong>{" "}
-          {record.title}
-        </p>
-
-        <p>
-          <strong>Diagnosis:</strong>{" "}
-          {record.diagnosis || "N/A"}
-        </p>
-
-        <p>
-          <strong>Doctor:</strong>{" "}
-          {record.doctorName || "N/A"}
-        </p>
-
-        <p>
-          <strong>Department:</strong>{" "}
-          {record.department || "N/A"}
-        </p>
+        <p><strong>Patient:</strong> {record.patientName}</p>
+        <p><strong>Phone:</strong> {record.patientPhone}</p>
+        <p><strong>Doctor:</strong> {record.doctorName || "N/A"}</p>
+        <p><strong>Department:</strong> {record.department || "N/A"}</p>
+        <p><strong>Diagnosis:</strong> {record.diagnosis || "N/A"}</p>
 
         <p>
           <strong>Medicines:</strong>{" "}
-          {record.medicines?.length
-            ? record.medicines.join(", ")
-            : "N/A"}
+          {record.medicines?.join(", ") || "N/A"}
         </p>
 
         <p>
@@ -87,22 +61,11 @@ function RecordDetails() {
         </p>
 
         <p>
-          <strong>Created:</strong>{" "}
+          <strong>Date:</strong>{" "}
           {new Date(
             record.createdAt
           ).toLocaleDateString()}
         </p>
-
-        {record.fileUrl && (
-          <a
-            href={`http://localhost:5000${record.fileUrl}`}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-block mt-4 bg-green-600 text-white px-4 py-2 rounded"
-          >
-            View Report
-          </a>
-        )}
 
       </div>
     </div>

@@ -7,11 +7,12 @@ function AddRecord({
   setEditingRecord
 }) {
   const [form, setForm] = useState({
-    patientPhone: "",
-    patientName: "",
-    title: "",
-    diagnosis: ""
-  });
+  patientPhone: "",
+  patientName: "",
+  title: "",
+  category: "",
+  diagnosis: ""
+});
   const [file, setFile] = useState(null);
   useEffect(() => {
   if (editingRecord) {
@@ -22,6 +23,8 @@ function AddRecord({
         editingRecord.patientName || "",
       title:
         editingRecord.title || "",
+      category:
+        editingRecord.category || "",
       diagnosis:
         editingRecord.diagnosis || ""
     });
@@ -81,6 +84,10 @@ if (!file && !editingRecord) {
       "diagnosis",
       form.diagnosis
     );
+    formData.append(
+  "category",
+  form.category
+);
 
     if (file) {
       formData.append(
@@ -186,15 +193,51 @@ setFile(null);
   <label className="block mb-1 font-medium">
     Record Title
   </label>
-
   <input
+  type="text"
   name="title"
-  required
-    value={form.title}
+  value={form.title}
+  onChange={handleChange}
+  className="w-full border rounded-lg p-3 mb-4"
+  placeholder="Enter record title"
+/>
+<div>
+  <label className="block mb-1 font-medium">
+    Record Category
+  </label>
+
+  <select
+    name="category"
+    value={form.category}
     onChange={handleChange}
     className="w-full border rounded-lg p-3"
-    placeholder="Blood Test / X-Ray / Prescription"
-  />
+  >
+    <option value="">
+      Select Category
+    </option>
+
+    <option value="Prescription">
+      Prescription
+    </option>
+
+    <option value="Blood Test">
+      Blood Test
+    </option>
+
+    <option value="X-Ray">
+      X-Ray
+    </option>
+
+    <option value="MRI">
+      MRI
+    </option>
+
+    <option value="Vaccination">
+      Vaccination
+    </option>
+  </select>
+</div>
+  
 </div>
 
 <div>

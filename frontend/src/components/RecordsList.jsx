@@ -1,4 +1,5 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import jsPDF from "jspdf";
 function RecordsList({
   records,
   deleteRecord,
@@ -18,7 +19,70 @@ function RecordsList({
 </div>
     );
   }
+const downloadPDF = (record) => {
+  const doc = new jsPDF();
 
+  doc.setFontSize(18);
+  doc.text("MediLocker Medical Report", 20, 20);
+
+  doc.setFontSize(12);
+
+  doc.text(
+    `Patient Name: ${record.patientName}`,
+    20,
+    40
+  );
+
+  doc.text(
+    `Phone: ${record.patientPhone}`,
+    20,
+    50
+  );
+
+  doc.text(
+    `Diagnosis: ${record.diagnosis || "N/A"}`,
+    20,
+    60
+  );
+
+  doc.text(
+    `Doctor: ${record.doctorName || "N/A"}`,
+    20,
+    70
+  );
+
+  doc.text(
+    `Department: ${record.department || "N/A"}`,
+    20,
+    80
+  );
+
+  doc.text(
+    `Medicines: ${
+      record.medicines?.join(", ") || "N/A"
+    }`,
+    20,
+    90
+  );
+
+  doc.text(
+    `Notes: ${record.notes || "N/A"}`,
+    20,
+    100
+  );
+
+  doc.text(
+    `Created: ${new Date(
+      record.createdAt
+    ).toLocaleDateString()}`,
+    20,
+    110
+  );
+
+  doc.save(
+    `${record.patientName}-report.pdf`
+  );
+};
   return (
     <div className="space-y-4">
       {records.map((record) => (
@@ -28,6 +92,12 @@ function RecordsList({
 >
   <div className="flex justify-between items-start mb-4">
     <div>
+       <button
+        onClick={() => navigate(-1)}
+        className="bg-gray-600 text-white px-4 py-2 rounded mb-4"
+      >
+        Back
+      </button>
       <h2
   onClick={() =>
     navigate(`/record/${record._id}`)
@@ -80,6 +150,11 @@ function RecordsList({
       <strong>📝 Notes:</strong>{" "}
       {record.notes || "N/A"}
     </p>
+
+    <p>
+  <strong>📂 Category:</strong>{" "}
+  {record.category || "N/A"}
+</p>
   </div>
 
   <div className="mt-5 flex gap-3 items-center">
@@ -110,7 +185,12 @@ function RecordsList({
   >
     Edit
   </button>
-
+<button
+  onClick={() => downloadPDF(record)}
+  className="bg-purple-600 text-white px-4 py-2 rounded-lg"
+>
+  Download PDF
+</button>
   <button
     onClick={() =>
       deleteRecord(record._id)
