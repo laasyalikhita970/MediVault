@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import MedicalTimeline from "../components/MedicalTimeline";
 function Dashboard() {
   const [records, setRecords] = useState([]);
-  const [searchPhone, setSearchPhone] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [editingRecord, setEditingRecord] =
   useState(null);
   const user = JSON.parse(
@@ -34,7 +34,15 @@ function Dashboard() {
   };
 
   const deleteRecord = async (id) => {
-    try {
+
+  const confirmDelete =
+    window.confirm(
+      "Delete this record?"
+    );
+
+  if (!confirmDelete) return;
+
+  try {
       await API.delete(
         `/records/${id}`,
         {
@@ -64,8 +72,24 @@ const logout = () => {
   }, []);
 const filteredRecords = records.filter(
   (record) =>
-    record.patientPhone.includes(searchPhone)
+    record.title
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
 );
+const totalReports =
+  records.filter(r => r.fileUrl).length;
+
+const totalPrescriptions =
+  records.filter(
+    r => r.category === "Prescription"
+  ).length;
+
+const totalTests =
+  records.filter(
+    r =>
+      r.category === "Blood Test" ||
+      r.category === "X-Ray"
+  ).length;
  return (
   <div className="min-h-screen bg-gray-100 p-6">
     <div className="max-w-6xl mx-auto">
@@ -103,7 +127,7 @@ const filteredRecords = records.filter(
       </div>
       
 
-      <div className="grid grid-cols-2 gap-4 mb-6">
+    <div className="grid md:grid-cols-5 gap-4 mb-6">
         <div className="bg-white shadow rounded-xl p-4">
           <h3 className="text-gray-500">
             Total Records
@@ -113,7 +137,25 @@ const filteredRecords = records.filter(
             {records.length}
           </p>
         </div>
+<div className="bg-white shadow rounded-xl p-4">
+  <h3 className="text-gray-500">
+    Reports
+  </h3>
 
+  <p className="text-3xl font-bold">
+    {totalReports}
+  </p>
+</div>
+
+<div className="bg-white shadow rounded-xl p-4">
+  <h3 className="text-gray-500">
+    Prescriptions
+  </h3>
+
+  <p className="text-3xl font-bold">
+    {totalPrescriptions}
+  </p>
+</div>
         <div className="bg-white shadow rounded-xl p-4">
           <h3 className="text-gray-500">
             Logged User
@@ -124,15 +166,25 @@ const filteredRecords = records.filter(
           </p>
         </div>
       </div>
+<div className="bg-white shadow rounded-xl p-4">
+  <h3 className="text-gray-500">
+    Tests
+  </h3>
 
+  <p className="text-3xl font-bold">
+    {totalTests}
+  </p>
+</div>
       <div className="bg-white rounded-xl shadow p-6 mb-6">
         <input
           type="text"
-          placeholder="Search Patient Phone"
-          value={searchPhone}
-          onChange={(e) =>
-            setSearchPhone(e.target.value)
-          }
+         value={searchTerm}
+
+onChange={(e) =>
+  setSearchTerm(e.target.value)
+}
+
+placeholder="Search Record Title"
           className="w-full border p-3 rounded"
         />
       </div>

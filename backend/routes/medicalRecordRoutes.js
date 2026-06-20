@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
-
+const authorize = require(
+  "../middleware/roleMiddleware"
+);
 const protect = require("../middleware/authMiddleware");
 const upload = require("../middleware/uploadMiddleware");
 const {
@@ -14,27 +16,50 @@ const {
 router.post(
   "/",
   protect,
+  authorize("patient", "helper"),
   upload.single("file"),
-  (req, res, next) => {
-    console.log("POST /records hit");
-    console.log(req.body);
-    console.log(req.file);
-    next();
-  },
   createRecord
 );
 
-router.get("/details/:id", protect, getRecordById);
+router.get(
+  "/details/:id",
+  protect,
+  authorize(
+    "patient",
+    "helper",
+    "doctor"
+  ),
+  getRecordById
+);
 
-router.get("/:phone", protect, getRecordsByPhone);
+router.get(
+  "/:phone",
+  protect,
+  authorize(
+    "patient",
+    "helper",
+    "doctor"
+  ),
+  getRecordsByPhone
+);
 
 router.put(
   "/:id",
   protect,
+  authorize(
+    "patient",
+    "helper",
+    "doctor"
+  ),
   upload.single("file"),
   updateRecord
 );
 
-router.delete("/:id", protect, deleteRecord);
+router.delete(
+  "/:id",
+  protect,
+  authorize("patient"),
+  deleteRecord
+);
 
 module.exports = router;

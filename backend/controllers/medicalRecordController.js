@@ -70,18 +70,22 @@ const updateRecord = async (req, res) => {
         `/uploads/${req.file.filename}`;
     }
 
-    const record =
-      await MedicalRecord.findByIdAndUpdate(
-        req.params.id,
-        updateData,
-        { new: true }
-      );
+    const record = await MedicalRecord.findOne({
+  _id: req.params.id,
+  uploadedBy: req.user.id
+});
 
-    if (!record) {
-      return res.status(404).json({
-        message: "Record not found",
-      });
-    }
+if (!record) {
+  return res.status(403).json({
+    message: "Unauthorized"
+  });
+}
+
+Object.assign(record, updateData);
+
+await record.save();
+
+    
 
     res.json(record);
 
@@ -94,15 +98,20 @@ const updateRecord = async (req, res) => {
 
 const deleteRecord = async (req, res) => {
   try {
-    const record = await MedicalRecord.findByIdAndDelete(
-      req.params.id
-    );
+   const record = await MedicalRecord.findOne({
+  _id: req.params.id,
+  uploadedBy: req.user.id
+});
 
-    if (!record) {
-      return res.status(404).json({
-        message: "Record not found"
-      });
-    }
+if (!record) {
+  return res.status(403).json({
+    message: "Unauthorized"
+  });
+}
+
+await record.deleteOne();
+
+    
 
     res.json({
       message: "Record deleted successfully"
