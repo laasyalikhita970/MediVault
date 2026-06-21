@@ -161,7 +161,7 @@ const downloadPDF = (record) => {
 
   {record.fileUrl && (
     <a
-      href={`http://localhost:5000${record.fileUrl}`}
+     href={`https://medivault-xorl.onrender.com${record.fileUrl}`}
       target="_blank"
       rel="noreferrer"
       className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"
